@@ -20,6 +20,17 @@ module CarrierWave
       end
     end
 
+    def crop_with_rect_and_resize(rect,size)
+        cache_stored_file! if !cached?
+        ::ImageScience.with_image(self.current_path) do |img|
+          img.with_crop(rect[0] , rect[1], rect[2], rect[3] ) do |i|
+            i.resize(size[0],size[1]) do |file|
+              file.save (self.path)
+            end
+          end
+        end
+    end
+    
     ##
     # Resize the image to fit within the specified dimensions while retaining
     # the original aspect ratio. The image may be shorter or narrower than
